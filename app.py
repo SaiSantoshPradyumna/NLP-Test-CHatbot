@@ -10,26 +10,28 @@ client = InferenceClient(
     token="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"
 )
 
-def extract_text_from_pdf(file_path):
+def extract_text_from_pdf(file):
     text = ""
-    with open(file_path, "rb") as pdf_file:
-        reader = PyPDF2.PdfReader(pdf_file)
-        for page_num in range(len(reader.pages)):
-            page = reader.pages[page_num]
-            text += page.extract_text()
+    file.seek(0)  # Ensure the pointer is at the start of the file
+    reader = PyPDF2.PdfReader(file)
+    for page_num in range(len(reader.pages)):
+        page = reader.pages[page_num]
+        text += page.extract_text() or ""  # Extract text from each page
     return text
 
-def extract_text_from_csv(file_path):
+def extract_text_from_csv(file):
     text = ""
-    with open(file_path, newline='', encoding='utf-8') as csv_file:
-        reader = csv.reader(csv_file)
-        for row in reader:
-            text += " ".join(row) + "\n"
+    file.seek(0)  # Move to the start of the file
+    reader = csv.reader(file.read().decode('utf-8').splitlines())
+    for row in reader:
+        text += " ".join(row) + "\n"
     return text
 
-def extract_text_from_xlsx(file_path):
+
+def extract_text_from_xlsx(file):
     text = ""
-    workbook = load_workbook(filename=file_path, data_only=True)
+    file.seek(0)  # Ensure the pointer is at the start of the file
+    workbook = load_workbook(filename=file, data_only=True)  # Read directly from file-like object
     for sheet in workbook.sheetnames:
         worksheet = workbook[sheet]
         text += f"\nSheet: {sheet}\n"
