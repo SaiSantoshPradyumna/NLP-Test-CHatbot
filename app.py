@@ -2,7 +2,8 @@
 import streamlit as st
 from huggingface_hub import InferenceClient
 import PyPDF2
-import csv
+# import csv
+asd
 from openpyxl import load_workbook
 
 client = InferenceClient(
